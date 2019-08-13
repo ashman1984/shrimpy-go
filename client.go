@@ -207,6 +207,13 @@ func (client *Client) DisableUser(userID string) SuccessReturn {
 	return *r
 }
 
+/*
+
+	END USER FUNCTIONS
+	START USER API KEY FUNCTIONS
+
+*/
+
 //GetAPIKeys gets the public keys associated with this user
 func (client *Client) GetAPIKeys(userID string) GetPublicAPIKeys {
 	r := new(GetPublicAPIKeys)
@@ -266,6 +273,13 @@ func (client *Client) SetAPIKeyPermissions(userID string, publicKey string, trad
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
+
+/*
+
+	END USER API KEYS FUNCTIONS
+	START ACCOUNTS FUNCTIONS
+
+*/
 
 //ListAccounts will return an array of exchange accounts linked with this useraccount
 func (client *Client) ListAccounts(userID string) LinkedAccounts {
@@ -337,7 +351,114 @@ func (client *Client) GetWhitelistedIPs(userID string) WhitelistedIPs {
 
 /*
 
-	END USER FUNCTIONS
+	END ACCOUNTS FUNCTIONS
+	START TRADING FUNCTIONS
+
+*/
+
+//CreateTrade will post a trade for this user to this exchange
+func (client *Client) CreateTrade(userID string, exchangeID string, fromSymbol string, toSymbol string, amount string, smartRouting bool, maxSpreadPercent string, maxSlippagePercent string) CreateTradeResponse {
+	r := new(CreateTradeResponse)
+	params := ""
+
+	var body CreateTradeRequest
+	body.Amount = amount
+	body.FromSymbol = fromSymbol
+	body.ToSymbol = toSymbol
+
+	if smartRouting {
+		body.SmartRouting = smartRouting
+	}
+
+	if maxSpreadPercent != "" {
+		body.MaxSpreadPercent = maxSpreadPercent
+	}
+
+	if maxSlippagePercent != "" {
+		body.MaxSlippagePercent = maxSlippagePercent
+	}
+
+	stringBody, err := json.Marshal(body)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	finalBody := string(stringBody)
+	fmt.Println(finalBody)
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetTradeStatus will return the details of a particular trade
+func (client *Client) GetTradeStatus(userID string, exchangeID string, tradeID string) TradeStatus {
+	r := new(TradeStatus)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades/"+tradeID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetActiveTrades will return all trades who status is not 'completed'
+func (client *Client) GetActiveTrades(userID string, exchangeID string) ActiveTrades {
+	r := new(ActiveTrades)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+/*
+
+	END TRADING FUNCTIONS
+	START BALANCE FUNCTIONS
+
+*/
+
+//GetBalance will return the balances on all held assets on that exchange
+func (client *Client) GetBalance(userID string, exchangeID string) ActiveTrades {
+	r := new(ActiveTrades)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/balance", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetTotalBalanceHistory gets an aggregate balance history for an exchange account
+func (client *Client) GetTotalBalanceHistory(userID string, exchangeID string) TotalBalanceHistory {
+	r := new(TotalBalanceHistory)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/total_balance_history", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+/*
+
+	END BALANCE FUNCTIONS
+	START LIMIT ORDER FUNCTIONS
+
+*/
+
+/*
+
+	END LIMIT ORDER FUNCTIONS
 
 */
 

@@ -15,6 +15,7 @@ type Config struct {
 	MasterAPIKey    string
 	MasterSecretKey string
 	TimeoutSecond   int
+	DebugMessages   bool
 }
 
 //SupportedExchanges gets all exchanges that shrimpy suppports
@@ -157,4 +158,80 @@ type LinkAccountRequest struct {
 //LinkAccountResponse is the responding id for the account that was just linked
 type LinkAccountResponse struct {
 	ID int `json:"id"`
+}
+
+//CreateTradeResponse stores the trade id of a posted trade
+type CreateTradeResponse struct {
+	ID string `json:"id"`
+}
+
+//CreateTradeRequest is the body for a create trade request
+type CreateTradeRequest struct {
+	FromSymbol         string `json:"fromSymbol"`
+	ToSymbol           string `json:"toSymbol"`
+	Amount             string `json:"amount"`
+	SmartRouting       bool   `json:"smartRouting,omitempty"`
+	MaxSpreadPercent   string `json:"maxSpreadPercent,omitempty"`
+	MaxSlippagePercent string `json:"maxSlippagePercent,omitempty"`
+}
+
+//TradeStatus holds info from requesting status of a particular trade
+type TradeStatus struct {
+	Trade struct {
+		ID                   string        `json:"id"`
+		FromSymbol           string        `json:"fromSymbol"`
+		ToSymbol             string        `json:"toSymbol"`
+		Amount               string        `json:"amount"`
+		Status               string        `json:"status"`
+		Success              bool          `json:"success"`
+		ErrorCode            int           `json:"errorCode"`
+		ErrorMessage         string        `json:"errorMessage"`
+		ExchangeAPIErrors    []interface{} `json:"exchangeApiErrors"`
+		SmartRouting         bool          `json:"smartRouting"`
+		MaxSpreadPercent     string        `json:"maxSpreadPercent"`
+		MaxSlippagePercent   string        `json:"maxSlippagePercent"`
+		TriggeredMaxSpread   bool          `json:"triggeredMaxSpread"`
+		TriggeredMaxSlippage bool          `json:"triggeredMaxSlippage"`
+	} `json:"trade"`
+	Changes []struct {
+		Symbol      string  `json:"symbol"`
+		NativeValue string  `json:"nativeValue"`
+		BtcValue    float64 `json:"btcValue"`
+		UsdValue    float64 `json:"usdValue"`
+	} `json:"changes"`
+	Fills []struct {
+		BaseAmount  string  `json:"baseAmount"`
+		BaseSymbol  string  `json:"baseSymbol"`
+		BtcValue    float64 `json:"btcValue"`
+		Price       string  `json:"price"`
+		QuoteAmount string  `json:"quoteAmount"`
+		QuoteSymbol string  `json:"quoteSymbol"`
+		Side        string  `json:"side"`
+		UsdValue    float64 `json:"usdValue"`
+	} `json:"fills"`
+}
+
+//ActiveTrades holds an array of active trades associated with a useraccount / exchange
+type ActiveTrades []struct {
+	ID                   string        `json:"id"`
+	FromSymbol           string        `json:"fromSymbol"`
+	ToSymbol             string        `json:"toSymbol"`
+	Amount               float64       `json:"amount"`
+	Status               string        `json:"status"`
+	Success              bool          `json:"success"`
+	ErrorCode            int           `json:"errorCode"`
+	ErrorMessage         string        `json:"errorMessage"`
+	ExchangeAPIErrors    []interface{} `json:"exchangeApiErrors"`
+	SmartRouting         bool          `json:"smartRouting"`
+	MaxSpreadPercent     string        `json:"maxSpreadPercent"`
+	MaxSlippagePercent   string        `json:"maxSlippagePercent"`
+	TriggeredMaxSpread   bool          `json:"triggeredMaxSpread"`
+	TriggeredMaxSlippage bool          `json:"triggeredMaxSlippage"`
+}
+
+//TotalBalanceHistory holds aggregate balance data
+type TotalBalanceHistory []struct {
+	Date     time.Time `json:"date"`
+	UsdValue float64   `json:"usdValue"`
+	BtcValue float64   `json:"btcValue"`
 }
