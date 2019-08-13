@@ -456,7 +456,82 @@ func (client *Client) GetTotalBalanceHistory(userID string, exchangeID string) T
 
 */
 
+//PlaceLimitOrder posts a limit order to the exchange
+func (client *Client) PlaceLimitOrder(userID string, exchangeID string, baseSymbol string, quoteSymbol string, quantity string, side string, timeInForce string, price string) LimitOrderReturn {
+	r := new(LimitOrderReturn)
+	params := ""
 
+	var body LimitOrderRequest
+	body.BaseSymbol = baseSymbol
+	body.Quantity = quantity
+	body.Price = price
+	body.QuoteSymbol = quoteSymbol
+	body.TimeInForce = timeInForce
+	body.Side = side
+
+	stringBody, err := json.Marshal(body)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	finalBody := string(stringBody)
+	fmt.Println(finalBody)
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/orders", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetLimitOrderStatus gets the status of a particular order
+func (client *Client) GetLimitOrderStatus(userID string, exchangeID string, orderID string) LimitOrderStatusReturn {
+	r := new(LimitOrderStatusReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/orders/"+orderID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//ListOpenOrders gets all orders not in a 'complete' state for a particular exchange
+func (client *Client) ListOpenOrders(userID string, exchangeID string) OpenActiveOrders {
+	r := new(OpenActiveOrders)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/orders", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//CancelLimitOrder cancels as particular orderID from that user/exchange
+func (client *Client) CancelLimitOrder(userID string, exchangeID string, orderID string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(DELETE, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/orders/"+orderID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
 
 /*
 
@@ -532,11 +607,13 @@ func httpDo(method string, param string, requestPath string, requestBody string,
 	return string(body)
 }
 
+//Increments nonce every time it is called
 func getNonce() int64 {
 	nonce = nonce + 1
 	return nonce
 }
 
+//Converts float64's to strings
 func floatToString(nFloat float64) string {
 	return strconv.FormatFloat(nFloat, 'f', -1, 64)
 }

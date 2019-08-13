@@ -235,3 +235,60 @@ type TotalBalanceHistory []struct {
 	UsdValue float64   `json:"usdValue"`
 	BtcValue float64   `json:"btcValue"`
 }
+
+//LimitOrderRequest holds data for a limit order request
+type LimitOrderRequest struct {
+	BaseSymbol  string `json:"baseSymbol"`
+	QuoteSymbol string `json:"quoteSymbol"`
+	Quantity    string `json:"quantity"`
+	Price       string `json:"price"`
+	Side        string `json:"side"`
+	TimeInForce string `json:"timeInForce"`
+}
+
+//LimitOrderReturn returns ID of order
+type LimitOrderReturn struct {
+	ID string `json:"id"`
+}
+
+//LimitOrderStatusReturn holds a particular executed orders information
+type LimitOrderStatusReturn struct {
+	Order struct {
+		ID                string        `json:"id"`
+		BaseSymbol        string        `json:"baseSymbol"`
+		QuoteSymbol       string        `json:"quoteSymbol"`
+		Amount            string        `json:"amount"`
+		Price             string        `json:"price"`
+		Side              string        `json:"side"`
+		TimeInForce       string        `json:"timeInForce"`
+		Status            string        `json:"status"`
+		CancelRequested   bool          `json:"cancelRequested"`
+		Success           bool          `json:"success"`
+		ErrorCode         int           `json:"errorCode"`
+		ErrorMessage      string        `json:"errorMessage"`
+		ExchangeAPIErrors []interface{} `json:"exchangeApiErrors"`
+	} `json:"order"`
+	Changes []struct {
+		Symbol      string  `json:"symbol"`
+		NativeValue string  `json:"nativeValue"`
+		BtcValue    float64 `json:"btcValue"`
+		UsdValue    float64 `json:"usdValue"`
+	} `json:"changes"`
+}
+
+//OpenActiveOrders holds all not in 'completed' state orders
+type OpenActiveOrders []struct {
+	Amount            string        `json:"amount"`
+	Price             string        `json:"price"`
+	CancelRequested   bool          `json:"cancelRequested"`
+	ErrorCode         int           `json:"errorCode"`
+	ErrorMessage      string        `json:"errorMessage"`
+	BaseSymbol        string        `json:"baseSymbol"`
+	QuoteSymbol       string        `json:"quoteSymbol"`
+	ID                string        `json:"id"`
+	Status            string        `json:"status"`
+	Success           bool          `json:"success"`
+	Side              string        `json:"side"`
+	TimeInForce       string        `json:"timeInForce"`
+	ExchangeAPIErrors []interface{} `json:"exchangeApiErrors"`
+}
