@@ -34,6 +34,11 @@ var nonce int64
 func (client *Client) GetSupportedExchanges() SupportedExchanges {
 	r := new(SupportedExchanges)
 	jsonStringReturn := httpDo(GET, "", "/v1/list_exchanges", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -42,6 +47,11 @@ func (client *Client) GetSupportedExchanges() SupportedExchanges {
 func (client *Client) GetExchangeAssets(exchangeName string) Assets {
 	r := new(Assets)
 	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/assets", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -50,6 +60,11 @@ func (client *Client) GetExchangeAssets(exchangeName string) Assets {
 func (client *Client) GetExchangePairs(exchangeName string) Pairs {
 	r := new(Pairs)
 	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/trading_pairs", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -65,6 +80,11 @@ func (client *Client) GetExchangePairs(exchangeName string) Pairs {
 func (client *Client) GetExchangeTickers(exchangeName string) Tickers {
 	r := new(Tickers)
 	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/ticker", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -76,6 +96,11 @@ func (client *Client) GetCandleStickData(exchangeName string, quoteTradingSymbol
 	params := "?quoteTradingSymbol=" + quoteTradingSymbol + "&baseTradingSymbol=" + baseTradingSymbol + "&interval=" + interval
 
 	jsonStringReturn := httpDo(GET, params, "/v1/exchanges/"+exchangeName+"/candles", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -109,6 +134,11 @@ func (client *Client) GetOrderBooks(sliceExchanges []string, limit, quoteSymbol,
 	params := "?exchange=" + exchange + sLimit + qSymbol + bSymbol
 
 	jsonStringReturn := httpDo(GET, params, "/v1/orderbooks", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -127,6 +157,11 @@ func (client *Client) GetUserList() UsersList {
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -138,6 +173,11 @@ func (client *Client) GetSingleUserList(userID string) SingleUser {
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -162,6 +202,11 @@ func (client *Client) CreateUser(userName string) UserID {
 	}
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -183,6 +228,11 @@ func (client *Client) RenameUser(userID string, userName string) SuccessReturn {
 	finalBody := string(stringBody)
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/name", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -193,6 +243,11 @@ func (client *Client) EnableUser(userID string) SuccessReturn {
 	params := ""
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/enable", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -203,6 +258,11 @@ func (client *Client) DisableUser(userID string) SuccessReturn {
 	params := ""
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/disable", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -220,6 +280,11 @@ func (client *Client) GetAPIKeys(userID string) GetPublicAPIKeys {
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/keys", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -230,6 +295,11 @@ func (client *Client) CreateAPIKeys(userID string) CreateAPIKeyReturn {
 	params := ""
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/keys", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -240,6 +310,11 @@ func (client *Client) DeleteAPIKeys(userID string, publicKey string) SuccessRetu
 	params := ""
 
 	jsonStringReturn := httpDo(DELETE, params, "/v1/users/"+userID+"/keys/"+publicKey, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -250,6 +325,11 @@ func (client *Client) GetAPIKeyPermissions(userID string, publicKey string) APIK
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/keys/"+publicKey+"/permissions", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -270,6 +350,11 @@ func (client *Client) SetAPIKeyPermissions(userID string, publicKey string, trad
 
 	finalBody := string(stringBody)
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/keys/"+publicKey+"/permissions", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -287,6 +372,11 @@ func (client *Client) ListAccounts(userID string) LinkedAccounts {
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -297,6 +387,11 @@ func (client *Client) GetAccount(userID string, exchangeAccountID string) Linked
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeAccountID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -325,6 +420,11 @@ func (client *Client) LinkExchangeAccount(userID string, exchangeName string, pu
 	fmt.Println(finalBody)
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -335,6 +435,11 @@ func (client *Client) UnLinkExchangeAccount(userID string, exchangeID string) Su
 	params := ""
 
 	jsonStringReturn := httpDo(DELETE, params, "/v1/users/"+userID+"/accounts/"+exchangeID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -345,6 +450,11 @@ func (client *Client) GetWhitelistedIPs(userID string) WhitelistedIPs {
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/whitelist", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -388,6 +498,11 @@ func (client *Client) CreateTrade(userID string, exchangeID string, fromSymbol s
 	fmt.Println(finalBody)
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -398,6 +513,11 @@ func (client *Client) GetTradeStatus(userID string, exchangeID string, tradeID s
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades/"+tradeID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
@@ -408,6 +528,11 @@ func (client *Client) GetActiveTrades(userID string, exchangeID string) ActiveTr
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+
+	if client.Config.DebugMessages {
+		fmt.Println(jsonStringReturn)
+	}
+
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
