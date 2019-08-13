@@ -4,6 +4,7 @@ A GoLang client for accessing the Shrimpy Developers API.
 Takes care of authentication and http requests so you can get the data you need quickly.
 
 **Currently there is no Asset Management endpoint support**
+**Currently there is no WebSocket support**
 
 ## Usage
 
