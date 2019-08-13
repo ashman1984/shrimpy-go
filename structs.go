@@ -80,3 +80,49 @@ type CandleSticks []struct {
 	UsdVolume   float64   `json:"usdVolume"`
 	Time        time.Time `json:"time"`
 }
+
+//UsersList defines a list of users associated with this masterAPI key
+type UsersList []struct {
+	ExpirationDate time.Time `json:"expirationDate"`
+	ID             string    `json:"id"`
+	IsEnabled      bool      `json:"isEnabled"`
+	Name           string    `json:"name"`
+}
+
+//SingleUser defines a single user object
+type SingleUser struct {
+	ExpirationDate time.Time `json:"expirationDate"`
+	ID             string    `json:"id"`
+	IsEnabled      bool      `json:"isEnabled"`
+	Name           string    `json:"name"`
+}
+
+//UserID of new user
+type UserID struct {
+	ID string `json:"id"`
+}
+
+//CreateUserRequest optional field creating new user
+type CreateUserRequest struct {
+	Name string `json:"name"`
+}
+
+//SuccessReturn returns whether the operation was successful
+type SuccessReturn struct {
+	Success bool `json:"success"`
+}
+
+//GetPublicAPIKeys returns all public keys associated with this user
+type GetPublicAPIKeys []string
+
+//CreateAPIKeyReturn creates new keys for this user
+type CreateAPIKeyReturn struct {
+	PublicKey  string `json:"publicKey"`
+	PrivateKey string `json:"privateKey"`
+}
+
+//APIKeyPermissions holds shrimpy permissions for a particular public key
+type APIKeyPermissions struct {
+	Account bool `json:"account"`
+	Trade   bool `json:"trade"`
+}

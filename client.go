@@ -14,22 +14,59 @@ import (
 )
 
 const (
-	//CONTENTTYPE is always json
-	CONTENTTYPE = "application/json"
 	//GET so I don't have to type quotes all the time
 	GET = "GET"
 	//POST so I don't have to type quotes all the time
 	POST = "POST"
+	//DELETE so I don't have to type quotes all the time
+	DELETE = "DELETE"
 )
 
 var nonce int64
 
-//NewClient initiates a new client object
-func NewClient(config Config) *Client {
-	nonce = time.Now().UnixNano()
-	var client Client
-	client.Config = config
-	return &client
+/*
+
+	START PUBLIC FUNCTIONS
+
+*/
+
+//GetSupportedExchanges returns a list of exchange objects for all exchanges that shrimpy supports
+func (client *Client) GetSupportedExchanges() SupportedExchanges {
+	r := new(SupportedExchanges)
+	jsonStringReturn := httpDo(GET, "", "/v1/list_exchanges", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetExchangeAssets returns a list of exchange assets for a particular exchange
+func (client *Client) GetExchangeAssets(exchangeName string) Assets {
+	r := new(Assets)
+	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/assets", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetExchangePairs returns a list of exchange pairs for a particular exchange
+func (client *Client) GetExchangePairs(exchangeName string) Pairs {
+	r := new(Pairs)
+	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/trading_pairs", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+/*
+
+	END PUBLIC FUNCTIONS
+	START MARKET FUNCTIONS
+
+*/
+
+//GetExchangeTickers returns a list of exchange tickers for all exchanges that shrimpy supports
+func (client *Client) GetExchangeTickers(exchangeName string) Tickers {
+	r := new(Tickers)
+	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/ticker", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
 }
 
 //GetCandleStickData returns all candlesticks for this exchange
@@ -76,36 +113,172 @@ func (client *Client) GetOrderBooks(sliceExchanges []string, limit, quoteSymbol,
 	return *r
 }
 
-//GetSupportedExchanges returns a list of exchange objects for all exchanges that shrimpy supports
-func (client *Client) GetSupportedExchanges() SupportedExchanges {
-	r := new(SupportedExchanges)
-	jsonStringReturn := httpDo(GET, "", "/v1/list_exchanges", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+/*
+
+	END MARKET FUNCTIONS
+	START USER FUNCTIONS - NOTE: You must have the user permission enabled on your Master API key to use these endpoints
+
+*/
+
+//GetUserList returns all users associated with your masterAPI key
+func (client *Client) GetUserList() UsersList {
+	r := new(UsersList)
+
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
 
-//GetExchangeAssets returns a list of exchange assets for a particular exchange
-func (client *Client) GetExchangeAssets(exchangeName string) Assets {
-	r := new(Assets)
-	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/assets", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+//GetSingleUserList returns a single user based on ID
+func (client *Client) GetSingleUserList(userID string) SingleUser {
+	r := new(SingleUser)
+
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
 
-//GetExchangePairs returns a list of exchange pairs for a particular exchange
-func (client *Client) GetExchangePairs(exchangeName string) Pairs {
-	r := new(Pairs)
-	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/trading_pairs", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+//CreateUser associates a new user with your account. Returns the ID of that user
+func (client *Client) CreateUser(userName string) UserID {
+	r := new(UserID)
+	params := ""
+	finalBody := ""
+
+	if userName != "" {
+		var body CreateUserRequest
+		body.Name = userName
+
+		stringBody, err := json.Marshal(body)
+
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		finalBody = string(stringBody)
+	}
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
 }
 
-//GetExchangeTickers returns a list of exchange tickers for all exchanges that shrimpy supports
-func (client *Client) GetExchangeTickers(exchangeName string) Tickers {
-	r := new(Tickers)
-	jsonStringReturn := httpDo(GET, "", "/v1/exchanges/"+exchangeName+"/ticker", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+//RenameUser names the user associated with the userID to the string userName
+func (client *Client) RenameUser(userID string, userName string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	var body CreateUserRequest
+	body.Name = userName
+
+	stringBody, err := json.Marshal(body)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	finalBody := string(stringBody)
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/name", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 	json.Unmarshal([]byte(jsonStringReturn), r)
 	return *r
+}
+
+//EnableUser enables the user with the given ID
+func (client *Client) EnableUser(userID string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/enable", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//DisableUser enables the user with the given ID
+func (client *Client) DisableUser(userID string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/disable", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetAPIKeys gets the public keys associated with this user
+func (client *Client) GetAPIKeys(userID string) GetPublicAPIKeys {
+	r := new(GetPublicAPIKeys)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/keys", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//CreateAPIKeys creates a new public and private key for this user
+func (client *Client) CreateAPIKeys(userID string) CreateAPIKeyReturn {
+	r := new(CreateAPIKeyReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/keys", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//DeleteAPIKeys deletes a public key
+func (client *Client) DeleteAPIKeys(userID string, publicKey string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(DELETE, params, "/v1/users/"+userID+"/keys/"+publicKey, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetAPIKeyPermissions returns the shrimpy permissions for this key
+func (client *Client) GetAPIKeyPermissions(userID string, publicKey string) APIKeyPermissions {
+	r := new(APIKeyPermissions)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/keys/"+publicKey+"/permissions", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//SetAPIKeyPermissions sets the shrimpy permissions for this key
+func (client *Client) SetAPIKeyPermissions(userID string, publicKey string, tradePermission bool, accountPermission bool) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	var permissions APIKeyPermissions
+	permissions.Account = accountPermission
+	permissions.Trade = tradePermission
+	stringBody, err := json.Marshal(permissions)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	finalBody := string(stringBody)
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/keys/"+publicKey+"/permissions", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+/*
+
+	END USER FUNCTIONS
+
+*/
+
+//NewClient initiates a new client object
+func NewClient(config Config) *Client {
+	nonce = time.Now().UnixNano()
+	var client Client
+	client.Config = config
+	return &client
 }
 
 //The function that does all the requesting of resources
