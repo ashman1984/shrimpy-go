@@ -115,6 +115,9 @@ type SuccessReturn struct {
 //GetPublicAPIKeys returns all public keys associated with this user
 type GetPublicAPIKeys []string
 
+//WhitelistedIPs returns all whitelisted IPS associated with this account
+type WhitelistedIPs []string
+
 //CreateAPIKeyReturn creates new keys for this user
 type CreateAPIKeyReturn struct {
 	PublicKey  string `json:"publicKey"`
@@ -125,4 +128,33 @@ type CreateAPIKeyReturn struct {
 type APIKeyPermissions struct {
 	Account bool `json:"account"`
 	Trade   bool `json:"trade"`
+}
+
+//LinkedAccounts for storing linked account data
+type LinkedAccounts []struct {
+	ID                int           `json:"id"`
+	Exchange          string        `json:"exchange"`
+	IsRebalancing     bool          `json:"isRebalancing"`
+	ExchangeAPIErrors []interface{} `json:"exchangeApiErrors"`
+}
+
+//LinkedExchangeAccount for storing exchange account data
+type LinkedExchangeAccount struct {
+	ID                int           `json:"id"`
+	Exchange          string        `json:"exchange"`
+	IsRebalancing     bool          `json:"isRebalancing"`
+	ExchangeAPIErrors []interface{} `json:"exchangeApiErrors"`
+}
+
+//LinkAccountRequest is the data we send to link an account to a user
+type LinkAccountRequest struct {
+	Exchange   string `json:"exchange"`
+	PublicKey  string `json:"publicKey"`
+	PrivateKey string `json:"privateKey"`
+	Passphrase string `json:"passphrase,omitempty"`
+}
+
+//LinkAccountResponse is the responding id for the account that was just linked
+type LinkAccountResponse struct {
+	ID int `json:"id"`
 }

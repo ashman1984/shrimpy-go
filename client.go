@@ -267,6 +267,74 @@ func (client *Client) SetAPIKeyPermissions(userID string, publicKey string, trad
 	return *r
 }
 
+//ListAccounts will return an array of exchange accounts linked with this useraccount
+func (client *Client) ListAccounts(userID string) LinkedAccounts {
+	r := new(LinkedAccounts)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetAccount will return a singular linked exchange object
+func (client *Client) GetAccount(userID string, exchangeAccountID string) LinkedExchangeAccount {
+	r := new(LinkedExchangeAccount)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeAccountID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//LinkExchangeAccount will link your exchange keys with this user account
+func (client *Client) LinkExchangeAccount(userID string, exchangeName string, publicKey string, privateKey string, passphrase string) LinkAccountResponse {
+	r := new(LinkAccountResponse)
+	params := ""
+
+	var body LinkAccountRequest
+	body.Exchange = exchangeName
+	body.PrivateKey = privateKey
+	body.PublicKey = publicKey
+
+	if passphrase != "" {
+		body.Passphrase = passphrase
+	}
+
+	stringBody, err := json.Marshal(body)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	finalBody := string(stringBody)
+	fmt.Println(finalBody)
+
+	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//UnLinkExchangeAccount will unlike this exchange from your user account
+func (client *Client) UnLinkExchangeAccount(userID string, exchangeID string) SuccessReturn {
+	r := new(SuccessReturn)
+	params := ""
+
+	jsonStringReturn := httpDo(DELETE, params, "/v1/users/"+userID+"/accounts/"+exchangeID, "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
+//GetWhitelistedIPs will unlike this exchange from your user account
+func (client *Client) GetWhitelistedIPs(userID string) WhitelistedIPs {
+	r := new(WhitelistedIPs)
+	params := ""
+
+	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/whitelist", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)
+	json.Unmarshal([]byte(jsonStringReturn), r)
+	return *r
+}
+
 /*
 
 	END USER FUNCTIONS
