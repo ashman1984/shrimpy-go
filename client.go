@@ -456,6 +456,8 @@ func (client *Client) GetTotalBalanceHistory(userID string, exchangeID string) T
 
 */
 
+
+
 /*
 
 	END LIMIT ORDER FUNCTIONS
