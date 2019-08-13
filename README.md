@@ -3,8 +3,8 @@
 A GoLang client for accessing the Shrimpy Developers API.
 Takes care of authentication and http requests so you can get the data you need quickly.
 
-**Currently there is no Asset Management endpoint support**
-**Currently there is no WebSocket support**
+- **Currently there is no Asset Management endpoint support**
+- **Currently there is no WebSocket support**
 
 ## Usage
 
@@ -18,8 +18,7 @@ Instantiate your client config in your func main():
 	config.Endpoint = "https://developers.shrimpy.io"
 	config.MasterAPIKey = "Insert Master API Key Here"
 	config.MasterSecretKey = "Insert Master Secret Key Here"
-	config.TimeoutSecond = 45
-	config.DebugMessages = true
+	config.DebugMessages = false
 
 	sc := shrimpyclient.NewClient(config)
   ```
