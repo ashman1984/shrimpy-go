@@ -14,7 +14,6 @@ type Config struct {
 	Endpoint        string
 	MasterAPIKey    string
 	MasterSecretKey string
-	TimeoutSecond   int
 	DebugMessages   bool
 }
 
