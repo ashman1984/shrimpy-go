@@ -545,8 +545,9 @@ func (client *Client) GetActiveTrades(userID string, exchangeID string) ActiveTr
 */
 
 //GetBalance will return the balances on all held assets on that exchange
-func (client *Client) GetBalance(userID string, exchangeID string) ActiveTrades {
-	r := new(ActiveTrades)
+func (client *Client) GetBalance(userID string, exchangeID string) ExchangeBalances {
+	fmt.Println("User ID: " + userID + " Exchange ID: " + exchangeID)
+	r := new(ExchangeBalances)
 	params := ""
 
 	jsonStringReturn := httpDo(GET, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/balance", "", client.Config.MasterAPIKey, client.Config.MasterSecretKey)

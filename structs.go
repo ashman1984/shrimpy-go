@@ -291,3 +291,14 @@ type OpenActiveOrders []struct {
 	TimeInForce       string        `json:"timeInForce"`
 	ExchangeAPIErrors []interface{} `json:"exchangeApiErrors"`
 }
+
+//ExchangeBalances keeps all balances of each coin
+type ExchangeBalances struct {
+	RetrievedAt time.Time `json:"retrievedAt"`
+	Balances    []struct {
+		Symbol      string  `json:"symbol"`
+		NativeValue int     `json:"nativeValue"`
+		BtcValue    float64 `json:"btcValue"`
+		UsdValue    float64 `json:"usdValue"`
+	} `json:"balances"`
+}
