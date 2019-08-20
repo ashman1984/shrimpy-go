@@ -15,7 +15,7 @@ Import the package at the top of your project: `import shrimpyclient "shrimpy-go
 Instantiate your client config in your func main():
   ```
 	var config shrimpyclient.Config
-	config.Endpoint = "https://developers.shrimpy.io"
+	config.Endpoint = "https://dev-api.shrimpy.io"
 	config.MasterAPIKey = "Insert Master API Key Here"
 	config.MasterSecretKey = "Insert Master Secret Key Here"
 	config.DebugMessages = false
