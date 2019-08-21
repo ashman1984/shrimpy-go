@@ -546,7 +546,7 @@ func (client *Client) GetActiveTrades(userID string, exchangeID string) ActiveTr
 
 //GetBalance will return the balances on all held assets on that exchange
 func (client *Client) GetBalance(userID string, exchangeID string) ExchangeBalances {
-	fmt.Println("User ID: " + userID + " Exchange ID: " + exchangeID)
+	//fmt.Println("User ID: " + userID + " Exchange ID: " + exchangeID)
 	r := new(ExchangeBalances)
 	params := ""
 
