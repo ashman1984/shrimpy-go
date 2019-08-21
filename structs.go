@@ -297,7 +297,7 @@ type ExchangeBalances struct {
 	RetrievedAt time.Time `json:"retrievedAt"`
 	Balances    []struct {
 		Symbol      string  `json:"symbol"`
-		NativeValue int     `json:"nativeValue"`
+		NativeValue float64 `json:"nativeValue"`
 		BtcValue    float64 `json:"btcValue"`
 		UsdValue    float64 `json:"usdValue"`
 	} `json:"balances"`
