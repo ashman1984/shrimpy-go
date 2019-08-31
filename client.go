@@ -495,7 +495,7 @@ func (client *Client) CreateTrade(userID string, exchangeID string, fromSymbol s
 	}
 
 	finalBody := string(stringBody)
-	fmt.Println(finalBody)
+	//fmt.Println(finalBody)
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/trades", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 
@@ -602,7 +602,7 @@ func (client *Client) PlaceLimitOrder(userID string, exchangeID string, baseSymb
 	}
 
 	finalBody := string(stringBody)
-	fmt.Println(finalBody)
+	//fmt.Println(finalBody)
 
 	jsonStringReturn := httpDo(POST, params, "/v1/users/"+userID+"/accounts/"+exchangeID+"/orders", finalBody, client.Config.MasterAPIKey, client.Config.MasterSecretKey)
 
